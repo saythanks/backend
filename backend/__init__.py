@@ -3,6 +3,9 @@ from flask import Flask
 from flask_cors import CORS
 # from payments import bp as payments_bp
 import backend.payments as payments
+from flask.ext.redis import FlaskRedis
+
+redis_store = FlaskRedis()
 
 # Flask server Application Factory
 
@@ -15,8 +18,12 @@ def create_app(test_config=None):
 
     app.config.from_mapping(
         SECRET_KEY=os.environ.get('SECRET_KEY'),
+        REDIS_URL=os.environ.get('REDIS_URL')
         # DB setup would also happen here
     )
+
+    redis_store.init_app(app)
+    
 
     if test_config is None:
         # load the instance config (config.py) if it exists, when not testing

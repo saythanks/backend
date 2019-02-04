@@ -6,11 +6,13 @@ from backend.payments import bp
 from backend.payments import balance
 
 
+
 # Handles route that retrieves a user's balance
 @bp.route('/balance', methods=['GET'])
 def index():
 
-    return jsonify({'balance': balance, 'monthly_spend': 1.50})
+    # return jsonify({'balance': redis_store.get('balance', 0), 'monthly_spend': 1.50})
+    return jsonify({'balance': 13.50, 'monthly_spend': 1.50})
 
 # Handles route that retrieves a user's balance
 @bp.route('/balance', methods=['POST'])
@@ -21,7 +23,7 @@ def create():
 	token = json['token']
 	amount = json['amount']
 
-	balance += amount
+	# redis_store.set('balance', redis_store.get('balance', 0) + amount)
 
 	charge = stripe.Charge.create(
 		amount=amount,
@@ -31,4 +33,4 @@ def create():
 	)
 
 
-	return jsonify({ 'charge': 3 })
+	return jsonify({ 'charge': charge })

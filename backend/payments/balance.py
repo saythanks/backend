@@ -4,7 +4,7 @@ from flask_cors import cross_origin
 import stripe
 from backend.payments import bp
 
-from backend import balance
+# from backend import balance
 
 
 

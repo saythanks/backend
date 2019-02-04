@@ -1,6 +1,6 @@
 import functools
 from flask import request, render_template, jsonify
-from payments import bp
+from backend.payments import bp
 
 @bp.route('/transaction', methods=['GET', 'POST'])
 def transaction():
@@ -11,8 +11,3 @@ def transaction():
     else:
         return 'BAD HTTP METHOD'
 
-
-# Handles route that retrieves a user's balance
-@bp.route('/balance', methods=['GET'])
-def balance():
-    return jsonify({'balance': 0})

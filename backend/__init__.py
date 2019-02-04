@@ -9,9 +9,7 @@ import backend.payments as payments
 def create_app(test_config=None):
     # create and configure the app
 
-    # Elastic beanstalk needs a variabled named 'applicaton' ugh
-    application = Flask(__name__, instance_relative_config=True)
-    app = application
+    app = Flask(__name__, instance_relative_config=True)
 
     app.config.from_mapping(
         SECRET_KEY=os.environ.get('SECRET_KEY'),
@@ -35,3 +33,7 @@ def create_app(test_config=None):
     app.register_blueprint(payments.bp)
 
     return app
+
+
+# Elastic beanstalk needs a variabled named 'applicaton' ugh
+application = create_app()

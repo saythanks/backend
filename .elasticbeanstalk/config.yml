@@ -1,9 +1,9 @@
 branch-defaults:
   master:
-    environment: $CIRCLE_BRANCH-saythanks-backend
+    environment: $CIRCLE_BRANCH-saythanks-api
     group_suffix: null
 global:
-  application_name: saythanks-backend
+  application_name: saythanks-api
   # branch: null
   # default_ec2_keyname: null
   default_platform: Python 3.6

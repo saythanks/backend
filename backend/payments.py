@@ -1,7 +1,8 @@
 import functools
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, jsonify
 
 bp = Blueprint('payments', __name__)
+
 
 @bp.route('/transaction', methods=['GET', 'POST'])
 def transaction():
@@ -12,6 +13,7 @@ def transaction():
     else:
         return 'BAD HTTP METHOD'
 
+
 @bp.route('/balance', methods=['GET'])
 def balance():
-    return '100'
+    return jsonify({'balance': 0})

@@ -12,6 +12,8 @@ flask = "*"
 sqlalchemy = "*"
 flask-sqlalchemy = "*"
 python-dotenv = "*"
+flask-restful = "*"
+stripe = "*"
 
 [requires]
 python_version = "3.6"

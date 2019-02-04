@@ -1,0 +1,33 @@
+version: 2
+jobs:
+  deploy:
+    working_directory: ~/app
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+
+      - run:
+          name: Installing deployment dependencies
+          working_directory: /
+          command: |
+            sudo pip install awsebcli pipenv --upgrade
+      - run:
+          name: Lock dependences to require.txt
+          working_directory: ~/app
+          command: |
+            pipenv lock -r > requirements.txt
+
+      - run:
+          name: Deploying
+          command: eb deploy $CIRCLE_BRANCH-saythanks-backend
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - deploy:
+          filters:
+            branches:
+              only:
+                - master

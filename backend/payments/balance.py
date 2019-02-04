@@ -3,7 +3,6 @@ from flask import request, render_template, jsonify
 from flask_cors import cross_origin
 import stripe
 from backend.payments import bp
-
 import backend
 
 

@@ -21,7 +21,11 @@ jobs:
       - run:
           name: Deploying
           working_directory: ~/app
-          command: eb deploy $CIRCLE_BRANCH-saythanks-backend
+          command: |
+            pwd
+            ls
+            eb use saythanks-backend
+            eb deploy -v --staged $CIRCLE_BRANCH-saythanks-backend
 
 workflows:
   version: 2

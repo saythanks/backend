@@ -4,9 +4,15 @@ from flask import Flask
 import backend.payments as payments
 
 # Flask server Application Factory
+
+
 def create_app(test_config=None):
     # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
+
+    # Elastic beanstalk needs a variabled named 'applicaton' ugh
+    application = Flask(__name__, instance_relative_config=True)
+    app = application
+
     app.config.from_mapping(
         SECRET_KEY=os.environ.get('SECRET_KEY'),
         # DB setup would also happen here
@@ -17,7 +23,7 @@ def create_app(test_config=None):
         app.config.from_pyfile('config.py', silent=True)
     else:
         # load the provided test config if passed into create_app
-        app.config.from_mapping (test_config)
+        app.config.from_mapping(test_config)
 
     # ensure instance folder exists
     try:

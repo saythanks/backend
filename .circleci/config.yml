@@ -17,8 +17,6 @@ jobs:
           working_directory: ~/app
           command: |
             pipenv lock -r > requirements.txt
-            git add requirements.txt
-            git commit -m "added requirements.txt"
 
       - run:
           name: Deploying

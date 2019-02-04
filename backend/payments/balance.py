@@ -4,7 +4,7 @@ from flask_cors import cross_origin
 import stripe
 from backend.payments import bp
 
-from backend import balance
+import backend
 
 
 
@@ -13,7 +13,7 @@ from backend import balance
 def index():
 
     # return jsonify({'balance': redis_store.get('balance', 0), 'monthly_spend': 1.50})
-    return jsonify({'balance': 13.50, 'monthly_spend': 1.50})
+    return jsonify({'balance': backend.balance, 'monthly_spend': 1.50})
 
 # Handles route that retrieves a user's balance
 @bp.route('/balance', methods=['POST'])
@@ -24,6 +24,7 @@ def create():
 	token = json['token']
 	amount = json['amount']
 
+	backend.balance += float(amount)
 	# redis_store.set('balance', redis_store.get('balance', 0) + amount)
 
 	charge = stripe.Charge.create(

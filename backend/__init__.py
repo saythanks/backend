@@ -3,13 +3,13 @@ from flask import Flask
 from flask_cors import CORS
 # from payments import bp as payments_bp
 import backend.payments as payments
-from flask.ext.redis import FlaskRedis
+# from flask.ext.redis import FlaskRedis
 
-redis_store = FlaskRedis()
+# redis_store = FlaskRedis()
 
 # Flask server Application Factory
 
-balance = 0
+balance = 10
 
 def create_app(test_config=None):
     # create and configure the app
@@ -22,7 +22,7 @@ def create_app(test_config=None):
         # DB setup would also happen here
     )
 
-    redis_store.init_app(app)
+    # redis_store.init_app(app)
     
 
     if test_config is None:

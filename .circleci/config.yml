@@ -20,6 +20,7 @@ jobs:
 
       - run:
           name: Deploying
+          working_directory: ~/app
           command: eb deploy $CIRCLE_BRANCH-saythanks-backend
 
 workflows:

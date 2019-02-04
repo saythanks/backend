@@ -15,6 +15,7 @@ python-dotenv = "*"
 flask-restful = "*"
 stripe = "*"
 flask-cors = "*"
+flask-redis = "*"
 
 [requires]
 python_version = "3.6"

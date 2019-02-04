@@ -3,7 +3,8 @@ from flask import request, render_template, jsonify
 from flask_cors import cross_origin
 import stripe
 from backend.payments import bp
-from backend.payments import balance
+
+from backend import balance
 
 
 # Handles route that retrieves a user's balance

@@ -6,6 +6,7 @@ import backend.payments as payments
 
 # Flask server Application Factory
 
+balance = 0
 
 def create_app(test_config=None):
     # create and configure the app
@@ -15,6 +16,7 @@ def create_app(test_config=None):
 
     app.config.from_mapping(
         SECRET_KEY=os.environ.get('SECRET_KEY'),
+
         # DB setup would also happen here
     )
 

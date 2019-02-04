@@ -9,7 +9,7 @@ import backend.payments as payments
 
 # Flask server Application Factory
 
-balance = 10
+balance = 0
 
 def create_app(test_config=None):
     # create and configure the app

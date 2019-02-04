@@ -23,7 +23,7 @@ def create():
 	token = json['token']
 	amount = json['amount']
 
-	backend.balance += float(amount)
+	backend.balance += float(amount) / 100
 	# redis_store.set('balance', redis_store.get('balance', 0) + amount)
 
 	charge = stripe.Charge.create(

@@ -15,7 +15,10 @@ python-dotenv = "*"
 flask-restful = "*"
 stripe = "*"
 flask-cors = "*"
-flask-redis = "*"
+rollbar = "*"
+blinker = "*"
+flask-migrate = "*"
+redis = "*"
 
 [requires]
 python_version = "3.6"

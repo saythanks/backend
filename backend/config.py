@@ -14,7 +14,7 @@ class Config(object):
     # API Stuff
     STRIPE_KEY = os.environ.get('STRIPE_KEY')
     STRIPE_SECRET = os.environ.get('STRIPE_SECRET')
-    ROLLBARR_KEY = 'bc723cba1d35413191c6b233804ae62e'
+    ROLLBARR_KEY = os.environ.get('ROLLBAR_KEY')
 
     # Database
     SQLALCHEMY_DATABASE_URI = os.environ.get(

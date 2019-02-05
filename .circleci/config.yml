@@ -32,7 +32,7 @@ jobs:
                   command: |
                       # Notify rollbar
                       curl https://api.rollbar.com/api/1/deploy/ \
-                      -F access_token='bc723cba1d35413191c6b233804ae62e' \
+                      -F access_token=$ROLLBAR_KEY \
                       -F environment=production \
                       -F revision=$CIRCLE_SHA1 \
                       -F local_username=$CIRCLE_USERNAME \

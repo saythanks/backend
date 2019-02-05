@@ -7,7 +7,7 @@ import rollbar.contrib.flask
 from backend.config import Config
 
 
-def init_rollbar(app):
+def init_app(app):
     # Logging
     rollbar.init(
         # access token for the demo app: https://rollbar.com/demo

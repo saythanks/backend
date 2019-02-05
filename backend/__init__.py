@@ -1,58 +1,45 @@
 import os
 from flask import Flask, got_request_exception
 from flask_cors import CORS
-
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 from backend.config import Config
 
 from backend.payments import bp as payments_bp
 from backend.error import bp as error_bp
 
-from backend.persistence.database import init_db
-from backend.persistence.redis import init_redis
+from backend.persistence import redis
+from backend.util import rollbar
 
-from backend.util.rollbar import init_rollbar
 
+# Setup the globals we need
+db = SQLAlchemy()
+migrate = Migrate()
 
 # Flask server Application Factory
-
-
-balance = 0
-
-
-def include_config(app, test_config):
-    # Inlcude our config file
-    app.config.from_object(Config)
-
-    if test_config is None:
-        # load the instance config (config.py) if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        # load the provided test config if passed into create_app
-        app.config.from_mapping(test_config)
 
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
 
-    include_config(app, test_config)
+    app.config.from_object(Config)
 
-    # ensure instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
+    if test_config is not None:
+        # load the provided test config if passed into create_app
+        app.config.from_mapping(test_config)
 
     # Ugh cors
     CORS(app)
 
     # Init necessary dependencies with our current app
-    init_db(app)
-    init_redis(app)
+    db.init_app(app)
+    migrate.init_app(app, db)
+    redis.init_app(app)
+    rollbar.init_app(app)
 
     # Rollbar is a logging service which automatially captures and analyzes any error we throw
-    init_rollbar(app)
 
     ###########################
     # Register our blueprints #
@@ -62,6 +49,8 @@ def create_app(test_config=None):
 
     return app
 
+
+from backend import model
 
 # Elastic beanstalk needs a variabled named 'applicaton' ugh
 application = create_app()

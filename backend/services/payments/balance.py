@@ -1,8 +1,8 @@
-from flask import request, render_template, jsonify, current_app
-from flask_cors import cross_origin
 import stripe
-from backend.payments import bp
+from flask import jsonify, request
+
 from backend.persistence.redis import redis_client
+from backend.services.payments import bp
 
 
 # Handles route that retrieves a user's balance

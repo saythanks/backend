@@ -1,6 +1,6 @@
-import functools
-from flask import request, render_template, jsonify
-from backend.payments import bp
+from flask import render_template, request
+
+from backend.services.payments import bp
 
 
 @bp.route('/transaction', methods=['GET', 'POST'])

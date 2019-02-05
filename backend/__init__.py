@@ -1,19 +1,17 @@
-import os
-from flask import Flask, got_request_exception
+from flask import Flask
 from flask_cors import CORS
 from flask_migrate import Migrate
 
 from backend.config import Config
-
-from backend.payments import bp as payments_bp
 from backend.errors import bp as error_bp
-
-from backend.persistence import redis, db
+from backend.persistence import db, redis
+from backend.services.payments import bp as payments_bp
+from backend.services.tracker import bp as tracker_bp
 from backend.util import rollbar
-
 
 # Setup the globals we need
 migrate = Migrate()
+
 
 # Flask server Application Factory
 
@@ -33,24 +31,24 @@ def create_app(test_config=None):
 
     # Init necessary dependencies with our current app
     db.init_app(app)
-    migrate.init_app(app, db)
+    migrate.init_app(app, db.db)
     redis.init_app(app)
-    rollbar.init_app(app)
 
     # Rollbar is a logging service which automatially captures and analyzes any error we throw
+    rollbar.init_app(app)
 
     ###########################
     # Register our blueprints #
     ###########################
-    app.register_blueprint(payments_bp)
-    app.register_blueprint(error_bp)
 
-    from backend.services.tracker import bp as tracker_bp
+    app.register_blueprint(error_bp)  # No actual routes, just error handling
+    app.register_blueprint(payments_bp)
     app.register_blueprint(tracker_bp)
 
     return app
 
 
+# Make sure our models are in scope
 from backend import model
 
 # Elastic beanstalk needs a variabled named 'applicaton' ugh

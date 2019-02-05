@@ -21,6 +21,7 @@ jobs:
                   name: Migrate Database
                   working_directory: ~/app
                   command: |
+                      pipenv install
                       pipenv run flask db upgrade
             - run:
                   name: Deploying

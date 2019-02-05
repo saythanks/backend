@@ -7,6 +7,6 @@ RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
 
 RUN pip install pipenv
 
-RUN pipenv install
+RUN pipenv install --system
 
 ENTRYPOINT ["pipenv", "run", "flask", "run", "--host=0.0.0.0"]

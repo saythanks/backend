@@ -1,7 +1,3 @@
-from flask import jsonify
-from backend.error import bp
-
-
 class ApiException(Exception):
     status_code = 400
 
@@ -16,15 +12,3 @@ class ApiException(Exception):
         rv = dict(self.payload or ())
         rv['message'] = self.message
         return rv
-
-
-@bp.app_errorhandler(ApiException)
-def handle_app_error(error):
-    response = jsonify(error.to_dict())
-    response.status_code = error.status_code
-    return response
-
-
-@bp.app_errorhandler(404)
-def handle_app_404(error):
-    return jsonify({'message': 'This route does not exist'}), 404

@@ -1,7 +1,7 @@
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func, text
 
-from backend import db
+from backend.persistence.db import db
 
 
 class Account(db.Model):

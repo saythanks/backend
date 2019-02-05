@@ -1,20 +1,18 @@
 import os
 from flask import Flask, got_request_exception
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
 from backend.config import Config
 
 from backend.payments import bp as payments_bp
-from backend.error import bp as error_bp
+from backend.errors import bp as error_bp
 
-from backend.persistence import redis
+from backend.persistence import redis, db
 from backend.util import rollbar
 
 
 # Setup the globals we need
-db = SQLAlchemy()
 migrate = Migrate()
 
 # Flask server Application Factory
@@ -46,6 +44,9 @@ def create_app(test_config=None):
     ###########################
     app.register_blueprint(payments_bp)
     app.register_blueprint(error_bp)
+
+    from backend.services.tracker import bp as tracker_bp
+    app.register_blueprint(tracker_bp)
 
     return app
 

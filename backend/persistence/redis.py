@@ -23,11 +23,17 @@ class RedisClient(object):
             app.extensions = {}
         app.extensions['redis'] = self
 
+    def get(self, name, default=None):
+        res = self._redis_client.get(name)
+        if res is None:
+            return default
+        return res.decode()
+
     def __getattr__(self, name):
         return getattr(self._redis_client, name)
 
-    def __getitem__(self, name):
-        return self._redis_client[name]
+    # def __getitem__(self, name):
+    #     return self._redis_client[name]
 
     def __setitem__(self, name, value):
         self._redis_client[name] = value

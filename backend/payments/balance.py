@@ -10,7 +10,7 @@ import backend
 # Handles route that retrieves a user's balance
 @bp.route('/balance', methods=['GET'])
 def index():
-    balance = int(redis_client.get('balance').decode())
+    balance = int(redis_client.get('balance', default=0))
     return jsonify({'balance': balance, 'monthly_spend': 1.50})
 
 # Handles route that retrieves a user's balance
@@ -21,7 +21,7 @@ def create():
     token = json['token']
     amount = json['amount']
 
-    balance = int(redis_client.get('balance').decode())
+    balance = int(redis_client.get('balance', default=0))
     balance += amount
 
     redis_client.set('balance', balance)

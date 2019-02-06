@@ -27,6 +27,7 @@ jobs:
                   name: Decrypt Files
                   working_directory: ~/app
                   command: |
+                      mkdir -p ./keys
                       openssl aes-256-cbc -d -in secure/firebase_encrypted \
                       -out keys/firebase.json -k $FB_ENCRYPTION_KEY
             - run:

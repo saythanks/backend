@@ -3,8 +3,8 @@ FROM python:3.6-alpine3.6
 COPY . /app
 WORKDIR /app
 
-RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
-
+RUN apk update && \
+    apk add postgresql-dev gcc python3-dev musl-dev alpine-sdk
 RUN pip install pipenv
 
 RUN pipenv install --system

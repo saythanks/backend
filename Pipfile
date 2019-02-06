@@ -20,6 +20,8 @@ blinker = "*"
 redis = "*"
 psycopg2 = "*"
 flask-migrate = "*"
+webargs = "*"
+firebase-admin = "*"
 
 [requires]
 python_version = "3.6"

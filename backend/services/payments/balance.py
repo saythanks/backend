@@ -3,11 +3,13 @@ from flask import jsonify, request
 
 from backend.persistence.redis import redis_client
 from backend.services.payments import bp
+from backend.middleware.token_auth import authorized
 
 
 # Handles route that retrieves a user's balance
 @bp.route('/balance', methods=['GET'])
-def index():
+@authorized
+def index(user):
     balance = int(redis_client.get('balance', default=0))
     return jsonify({'balance': balance, 'monthly_spend': 1.50})
 

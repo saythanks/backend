@@ -7,7 +7,7 @@ from backend.errors import bp as error_bp
 from backend.persistence import db, redis
 from backend.services.payments import bp as payments_bp
 from backend.services.tracker import bp as tracker_bp
-from backend.util import rollbar
+from backend.util import firebase, rollbar
 
 # Setup the globals we need
 migrate = Migrate()

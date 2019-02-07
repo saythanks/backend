@@ -7,6 +7,7 @@ from backend.errors import bp as error_bp
 from backend.persistence import db, redis
 from backend.services.payments import bp as payments_bp
 from backend.services.tracker import bp as tracker_bp
+from backend.services.health import bp as health_bp
 from backend.util import firebase, rollbar
 
 # Setup the globals we need
@@ -44,6 +45,7 @@ def create_app(test_config=None):
     app.register_blueprint(error_bp)  # No actual routes, just error handling
     app.register_blueprint(payments_bp)
     app.register_blueprint(tracker_bp)
+    app.register_blueprint(health_bp)
 
     return app
 

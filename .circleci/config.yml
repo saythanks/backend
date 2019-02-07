@@ -24,10 +24,12 @@ jobs:
                   command: |
                       pipenv lock -r > requirements.txt
             - run:
+                  name: Install pipenv dependencies
+                  command: pipenv install
+            - run:
                   name: Migrate Database
                   working_directory: ~/app
                   command: |
-                      pipenv install
                       pipenv run flask db upgrade
             - run:
                   name: Deploying

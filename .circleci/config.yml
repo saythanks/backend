@@ -23,6 +23,7 @@ jobs:
                   working_directory: ~/app
                   command: |
                       pipenv lock -r > requirements.txt
+                      cat requirements.txt
             - run:
                   name: Install pipenv dependencies
                   command: pipenv install

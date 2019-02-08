@@ -1,0 +1,32 @@
+-i https://pypi.org/simple
+alembic==1.0.7
+aniso8601==4.1.0
+blinker==1.4
+certifi==2018.11.29
+chardet==3.0.4
+click==7.0
+flask-cors==3.0.7
+flask-migrate==2.3.1
+flask-restful==0.3.7
+flask-sqlalchemy==2.3.2
+flask==1.0.2
+idna==2.8
+itsdangerous==1.1.0
+jinja2==2.10
+mako==1.0.7
+markupsafe==1.1.0
+marshmallow==2.18.0
+psycopg2==2.7.7
+python-dateutil==2.8.0
+python-dotenv==0.10.1
+python-editor==1.0.4
+pytz==2018.9
+redis==3.1.0
+requests==2.21.0 ; python_version >= '3.0'
+rollbar==0.14.6
+six==1.12.0
+sqlalchemy==1.2.17
+stripe==2.20.3
+urllib3==1.24.1
+webargs==5.1.2
+werkzeug==0.14.1

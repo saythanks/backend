@@ -1,4 +1,3 @@
-from firebase_admin import auth
 from flask import session, jsonify
 from webargs import fields
 from webargs.flaskparser import use_args

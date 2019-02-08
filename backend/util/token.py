@@ -1,4 +1,4 @@
-from firebase_admin import auth
+# from firebase_admin import auth
 
 
 def validate(token):

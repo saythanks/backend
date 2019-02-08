@@ -1,6 +1,6 @@
 branch-defaults:
   master:
-    environment: $CIRCLE_BRANCH-saythanks-api
+    environment: master-saythanks-api
     group_suffix: null
 global:
   application_name: saythanks-api

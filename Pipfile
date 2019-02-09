@@ -4,21 +4,9 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pytest = "*"
-coverage = "*"
 
 [packages]
 flask = "*"
-sqlalchemy = "*"
-flask-sqlalchemy = "*"
-python-dotenv = "*"
-stripe = "*"
-flask-cors = "*"
-rollbar = "*"
-blinker = "*"
-redis = "*"
-flask-migrate = "*"
-webargs = "*"
 
 [requires]
 python_version = "3.6"

@@ -25,3 +25,7 @@ dist/
 build/
 *.egg-info/
 requirements.txt
+
+
+supervisord.log
+supervisord.pid

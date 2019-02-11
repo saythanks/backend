@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import request
+from flask import request, jsonify
 
 from backend.model.user import User
 from backend.util.token import validate
@@ -9,6 +9,7 @@ from backend.errors.ApiException import ApiException
 def authorized(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        return jsonify(dict(request.headers))
         if not 'Authorization' in request.headers:
             raise ApiException(
                 'No Authorization Header present', status_code=401)

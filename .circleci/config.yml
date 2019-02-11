@@ -6,7 +6,12 @@ jobs:
             - image: circleci/python:3.6
         steps:
             - checkout
-
+            - restore_cache:
+                  keys:
+                      # when lock file changes, use increasingly general patterns to restore cache
+                      - pip-packages-v1-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+                      - pip-packages-v1-{{ .Branch }}-
+                      - pip-packages-v1-
             - run:
                   name: Installing deployment dependencies
                   working_directory: /
@@ -27,6 +32,12 @@ jobs:
             - run:
                   name: Install pipenv dependencies
                   command: pipenv install
+
+            - save_cache:
+                  paths:
+                      - ~/.local/share/virtualenvs # this path depends on where pipenv creates a virtualenv
+                  key: pip-packages-v1-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+
             - run:
                   name: Migrate Database
                   working_directory: ~/app

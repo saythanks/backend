@@ -15,10 +15,10 @@ def authorized(f):
         data = request.headers['Authorization']
         token = str.replace(str(data), 'Bearer ', '')
 
-        decoded_token = validate(token)
+        decoded_token, error = validate(token)
         if decoded_token is None:
             raise ApiException(
-                'Invalid auth token', status_code=401, payload={'token': token})
+                'Invalid auth token', status_code=401, payload={'token': token, 'errror': error})
 
         user = User.for_token(decoded_token)
         if user is None:

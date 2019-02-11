@@ -27,11 +27,11 @@ jobs:
             - run:
                   name: Install pipenv dependencies
                   command: pipenv install
-            # - run:
-            #   name: Migrate Database
-            #   working_directory: ~/app
-            #   command: |
-            #   pipenv run flask db upgrade
+            - run:
+                  name: Migrate Database
+                  working_directory: ~/app
+                  command: |
+                      pipenv run flask db upgrade
             - run:
                   name: Deploying
                   working_directory: ~/app

@@ -1,4 +1,9 @@
 {
     "AWSEBDockerrunVersion": "1",
+    "Ports": [
+        {
+            "ContainerPort": "5000"
+        }
+    ],
     "Logging": "/var/eb_log"
 }

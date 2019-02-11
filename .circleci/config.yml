@@ -46,7 +46,7 @@ jobs:
             - run:
                   name: Deploying
                   working_directory: ~/app
-                  command: eb deploy -v --staged master-saythanks
+                  command: eb deploy -v --staged
             - run:
                   name: Deployment notification to Rollbar
                   command: |

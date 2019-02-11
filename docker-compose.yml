@@ -3,6 +3,7 @@ services:
     api:
         build: .
         image: oscarnewman/pipenv:3.6
+        restart: always
         volumes:
             - .:/app
         ports:
@@ -16,6 +17,7 @@ services:
         links:
             - redis
             - db
+        entrypoint: ['pipenv', 'run', 'flask', 'run', '--host=0.0.0.0']
     db:
         image: postgres:11-alpine
         volumes:

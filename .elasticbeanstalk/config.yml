@@ -1,6 +1,6 @@
 branch-defaults:
     master:
-        environment: saythanks-master-1
+        environment: saythanks-master-2
         group_suffix: null
 global:
     application_name: saythanks-api

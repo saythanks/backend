@@ -2,10 +2,11 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func, text
 
 from backend.persistence.db import db
+from backend.model.model import BaseModel
 from backend.model.account import Account
 
 
-class User(db.Model):
+class User(BaseModel):
     id = db.Column(UUID, primary_key=True,
                    server_default=text("uuid_generate_v4()"))
 

@@ -7,21 +7,20 @@ RUN apk update && \
     postgresql-dev \
     gcc \
     python3-dev \
-    build-base linux-headers pcre-dev \
-    musl-dev \
     alpine-sdk \
-    supervisor
+    build-base linux-headers pcre-dev \
+    libffi-dev openssl-dev musl-dev
 
-RUN pip install pipenv uwsgi
+RUN pip install pipenv
 
 
 # Create a group and user
-RUN addgroup -S app && adduser -S app -G app
+# RUN addgroup -S app && adduser -S app -G app
 
 # Copy the base uWSGI ini file to enable default dynamic uwsgi process number
-COPY uwsgi.ini /etc/uwsgi/
+# COPY uwsgi.ini /etc/uwsgi/
 # Custom Supervisord config
-COPY supervisord.conf /etc/supervisord.conf
+# COPY supervisord.conf /etc/supervisord.conf
 
 COPY . /app
 WORKDIR /app
@@ -32,4 +31,4 @@ RUN pipenv install --deploy --system
 
 EXPOSE 5000
 
-ENTRYPOINT [ "/usr/bin/supervisord" ]
+# ENTRYPOINT [ "/usr/bin/supervisord" ]

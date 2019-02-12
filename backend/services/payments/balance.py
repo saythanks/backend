@@ -1,3 +1,4 @@
+import sys
 import stripe
 from flask import jsonify, request
 
@@ -11,7 +12,7 @@ from backend.middleware.token_auth import authorized
 @authorized
 def index(user):
     balance = int(redis_client.get('balance', default=0))
-    return jsonify({'balance': balance, 'monthly_spend': 1.50})
+    return jsonify({'me': user.id, 'balance': user.account.balance, 'monthly_spend': 1.50})
 
 
 # Handles route that retrieves a user's balance

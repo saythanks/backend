@@ -20,7 +20,7 @@ def authorized(f):
             raise ApiException(
                 'Invalid auth token', status_code=401, payload={'token': token, 'errror': error})
 
-        user = User.for_token(decoded_token)
+        user, err = User.for_token(decoded_token)
         if user is None:
             raise ApiException(
                 'Unable to find or create user for token', status_code=500)

@@ -20,6 +20,8 @@ redis = "*"
 flask-migrate = "*"
 webargs = "*"
 psycopg2 = "*"
+python-jose = "*"
+cryptography = "*"
 
 [requires]
 python_version = "3.6"

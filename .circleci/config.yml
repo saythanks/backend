@@ -17,12 +17,14 @@ jobs:
                   working_directory: /
                   command: |
                       sudo pip install awsebcli pipenv --upgrade
-            - run:
-                  name: Decrypt Files
-                  working_directory: ~/app
-                  command: |
-                      mkdir -p ./keys
-                      openssl aes-256-cbc -d -in secure/firebase_encrypted -out keys/firebase.json -k $FB_ENCRYPTION_KEY -md md5
+
+                  #   name: Decrypt Files
+                  #   working_directory: ~/app
+                  #   command: |
+                  #   mkdir -p ./keys
+                  #   openssl aes-256-cbc -d -in secure/firebase_encrypted -out keys/firebase.json -k $FB_ENCRYPTION_KEY -md md5
+            # - run:
+
             - run:
                   name: Lock dependences to requirements.txt and commit
                   working_directory: ~/app

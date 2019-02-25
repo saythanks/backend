@@ -1,13 +1,18 @@
-from flask import render_template, request
+from webargs import fields
+from webargs.flaskparser import use_args
 
+from backend.errors.ApiException import ApiException
+from backend.middleware.token_auth import authorized
+from backend.model.payable import Payable
 from backend.services.payments import bp
 
 
-@bp.route('/transaction', methods=['GET', 'POST'])
-def transaction():
-    if request.method is 'GET':
-        return render_template("This would GET a transaction (given an id)")
-    elif request.method is 'POST':
-        return render_template("Just recevied " + request.get_data())
-    else:
-        return 'BAD HTTP METHOD'
+@bp.route('/transaction', methods=['post'])
+@authorized
+@use_args({'payable': fields.Str(required=True)})
+def create(args, user):
+    payable = Payable.query.get(args['payable'])
+    if payable is None:
+        raise ApiException("Payable not found", status_code=400)
+
+    pass

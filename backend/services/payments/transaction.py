@@ -10,7 +10,7 @@ from backend.services.payments import bp
 @bp.route('/transaction', methods=['post'])
 @authorized
 @use_args({'payable': fields.Str(required=True)})
-def create(args, user):
+def create_tx(args, user):
     payable = Payable.query.get(args['payable'])
     if payable is None:
         raise ApiException("Payable not found", status_code=400)

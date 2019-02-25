@@ -1,9 +1,7 @@
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.sql import func, text
 
-from backend.persistence.db import db
 from backend.model.model import BaseModel
-from backend.model.account import Account
+from backend.persistence.db import db
 
 association_table = db.Table(
     "app_user",
@@ -14,7 +12,6 @@ association_table = db.Table(
 
 
 class App(BaseModel):
-
     account_id = db.Column(UUID, db.ForeignKey("account.id"))
     account = db.relationship("Account")
 
@@ -24,3 +21,5 @@ class App(BaseModel):
     name = db.Column(db.Text, nullable=False)
     url = db.Column(db.Text, nullable=True)
     description = db.Column(db.Text, nullable=True)
+
+    stripe_account_id = db.Column(db.Text, nullable=True)

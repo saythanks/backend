@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 
 from sqlalchemy.orm.attributes import QueryableAttribute
+from sqlalchemy.ext.declarative import declarative_base
 from backend.persistence.db import db
 
 
@@ -26,3 +27,4 @@ class BaseModel(db.Model):
             column.key: getattr(self, attr)
             for attr, column in self.__mapper__.c.items()
         }
+

@@ -8,7 +8,7 @@ from backend.model.model import BaseModel
 class Payable(BaseModel):
 
     app_id = db.Column(UUID, db.ForeignKey("app.id"))
-    app = db.relationship("App")
+    app = db.relationship("App", back_populates="payables")
 
     display_name = db.Column(db.Text, nullable=False)
     display_price = db.Column(db.Integer, nullable=False)

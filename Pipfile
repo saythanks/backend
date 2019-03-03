@@ -22,6 +22,8 @@ webargs = "*"
 psycopg2 = "*"
 python-jose = "*"
 cryptography = "*"
+flask-marshmallow = "*"
+marshmallow-sqlalchemy = "*"
 
 [requires]
 python_version = "3.6"

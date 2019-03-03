@@ -1,8 +1,10 @@
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.ext.associationproxy import association_proxy
 
 from backend.persistence.db import db
 from backend.model.model import BaseModel
 from backend.model.account import Account
+from backend.model.appUser import AppUser
 
 
 class User(BaseModel):
@@ -12,6 +14,9 @@ class User(BaseModel):
 
     account_id = db.Column(UUID, db.ForeignKey("account.id"))
     account = db.relationship("Account")
+
+    # apps = db.relationship("AppUser", back_populates="user")
+    apps = association_proxy("user_apps", "app", creator=lambda app: AppUser(app=app))
 
     stripe_id = db.Column(db.Text)
 

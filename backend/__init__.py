@@ -13,7 +13,6 @@ from backend.services.health import bp as health_bp
 from backend.services.apps import bp as apps_bp
 
 from backend.util import rollbar
-from backend.util.marshmallow import ma
 
 from backend.model.model import BaseModel
 
@@ -82,7 +81,6 @@ def create_app(test_config=None):
     db.init_app(app)
     migrate.init_app(app, db.db)
     redis.init_app(app)
-    ma.init_app(app)
 
     # Rollbar is a logging service which automatially captures and analyzes any error we throw
     rollbar.init_app(app)

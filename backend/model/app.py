@@ -6,8 +6,6 @@ from flask import jsonify
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.associationproxy import association_proxy
 
-from backend.util.marshmallow import ma
-from marshmallow import fields
 
 from backend.model.model import BaseModel
 from backend.model.account import Account

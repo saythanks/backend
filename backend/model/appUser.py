@@ -3,7 +3,6 @@ import string
 from enum import Enum
 
 from sqlalchemy.dialects.postgresql import UUID
-from backend.util.marshmallow import ma
 
 from backend.model.model import BaseModel
 from backend.persistence.db import db

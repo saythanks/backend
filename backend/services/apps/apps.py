@@ -3,19 +3,25 @@ from webargs.flaskparser import use_args
 from flask import jsonify
 
 from backend.services.apps import bp
-from backend.middleware.token_auth import authorized
+from backend.middleware.token_auth import authorized, maybe_authorized
 from backend.model.app import App
 
 
 @bp.route("/apps", methods=["GET"])
 @authorized
 def list(user):
-    return user.apps.copy()
+    return user.apps
 
 
-@bp.route("/apps/:id", methods=["GET"])
-def get(user):
-    pass
+@bp.route("/apps/<int:id>", methods=["GET"])
+@maybe_authorized
+def get(user, id):
+    if user is not None:
+        if id in [app.id for app in user.apps]: # user has access to (is owner of) given app
+            return App.get(id)
+    else:
+        return App.basic_info(id)
+
 
 
 @bp.route("/apps", methods=["POST"])

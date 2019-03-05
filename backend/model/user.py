@@ -20,6 +20,9 @@ class User(BaseModel):
 
     stripe_id = db.Column(db.Text)
 
+    def owns(self, app_id):
+        return id in [app.id for app in self.apps]
+
     @staticmethod
     def create(email, name):
         account = Account()

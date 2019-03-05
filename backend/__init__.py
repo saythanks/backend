@@ -12,7 +12,6 @@ from backend.services.tracker import bp as tracker_bp
 from backend.services.health import bp as health_bp
 from backend.services.apps import bp as apps_bp
 
-from backend.util import rollbar
 
 from backend.model.model import BaseModel
 
@@ -32,15 +31,21 @@ def to_dict(val):
 
     return val
 
+def is_sequence(arg):
+    return (not hasattr(arg, "strip") and
+        hasattr(arg, "__getitem__") or
+        hasattr(arg, "__iter__"))
+
 
 def to_json(val):
     if isinstance(val, dict):
         return jsonify(val)
 
-    elif isinstance(val, list):
+    if is_sequence(val):
         return jsonify(list(map(lambda v: to_dict(v), val)))
 
-    elif isinstance(val, BaseModel):
+
+    if isinstance(val, BaseModel):
         return jsonify(val.to_dict())
 
     return val
@@ -83,7 +88,7 @@ def create_app(test_config=None):
     redis.init_app(app)
 
     # Rollbar is a logging service which automatially captures and analyzes any error we throw
-    rollbar.init_app(app)
+    # rollbar.init_app(app)
 
     ###########################
     # Register our blueprints #

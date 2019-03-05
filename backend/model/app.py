@@ -60,5 +60,5 @@ class App(BaseModel):
     @staticmethod
     def basic_info(id):
         # returns a publicly viewable dict containing basic info about app given an id
-        app = App.get(id)
-        return {"name", app.name, "url", app.url, "description", app.description}
+        app = App.query.get(id)
+        return {"id": app.id, "name": app.name, "url": app.url, "description": app.description}

@@ -44,8 +44,8 @@ def create_tx(user, args):
         "payable": fields.Str(required=True),
         "name": fields.Str(required=True),
         "email": fields.Str(required=True),
-        "card_token": fields.Str(required=True),
-        "top_up": fields.Integer(default=0),
+        "card_token": fields.Str(),
+        "top_up": fields.Integer(),
     }
 )
 def create_tx_account(args):
@@ -55,13 +55,14 @@ def create_tx_account(args):
     if user is None:
         raise ApiException("Could not create user account")
 
-    deposit = user.deposit(args["top_up"], args["card_token"])
-    if deposit is None:
-        raise ApiException("Could not deposit funds")
+    if "card_token" in args.keys():
+        deposit = user.deposit(args["top_up"], args["card_token"])
+        if deposit is None:
+            raise ApiException("Could not deposit funds")
 
     payment = Payment.transfer(user, payable)
     if payment is None:
-        raise ApiException("Coudl not complete transfer")
+        raise ApiException("Could not complete transfer")
 
     return {"success": True}
 

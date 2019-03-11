@@ -3,7 +3,7 @@ from webargs.flaskparser import use_args
 from flask import jsonify
 
 from backend.services.apps import bp
-from backend.middleware.token_auth import authorized
+from backend.middleware.token_auth import authorized, maybe_authorized
 from backend.model.app import App
 from backend.model.payable import Payable
 from backend.persistence.db import db
@@ -18,9 +18,18 @@ def list_payables(user, id):
 
 
 @bp.route("/payables/<id>", methods=["GET"])
+@maybe_authorized
 def get_payable(user, id):
-    payable = Payables.query.get(id)
-    return payable
+    payable = Payable.query.get(id)
+
+    if payable is None:
+        raise ApiException(
+            message="Not Found", status_code=404, payload={"payable": id}
+        )
+
+    p = payable.to_dict()
+    p["app"] = payable.app.to_dict()
+    return p
 
 
 @bp.route("/apps/<app_id>/payables", methods=["POST"])

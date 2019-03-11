@@ -1,6 +1,8 @@
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.associationproxy import association_proxy
 
+
+from backend.errors.ApiException import ApiException
 from backend.persistence.db import db
 from backend.model.model import BaseModel
 from backend.model.account import Account
@@ -24,15 +26,36 @@ class User(BaseModel):
         return id in [app.id for app in self.apps]
 
     @staticmethod
-    def create(email, name):
+    def create(email, name, commit=True):
         account = Account()
         user = User(email=email, name=name, account=account)
 
         db.session.add(account)
         db.session.add(user)
-        db.session.commit()
+
+        if commit:
+            db.session.commit()
 
         return user
+
+    def deposit(self, amount, stripe_token=None):
+        if stripe_token is None:
+            stripe_token = self.stripe_id
+        if stripe_token is None:
+            return None
+
+        return self.account.deposit(amount, stripe_token)
+
+    @staticmethod
+    def create_for_email(email, name):
+        if email is None or name is None:
+            return None
+
+        user = User.query.filter_by(email=email).first()
+        if user is not None:
+            raise ApiException("User with this email already exists")
+
+        return User.create(email, name, commit=False)
 
     @staticmethod
     def for_token(decoded_token):

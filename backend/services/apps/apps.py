@@ -5,6 +5,8 @@ from flask import jsonify
 from backend.services.apps import bp
 from backend.middleware.token_auth import authorized, maybe_authorized
 from backend.model.app import App
+from ...persistence.db import db
+from ...errors.ApiException import ApiException
 
 
 @bp.route("/apps", methods=["GET"])
@@ -16,13 +18,13 @@ def list(user):
 @bp.route("/apps/<id>", methods=["GET"])
 @maybe_authorized
 def get(user, id):
+    app = App.query.get_or_404(id)
+
     if user is not None and user.owns(id):
-        # if id in [app.id for app in user.apps]: # user has access to (is owner of) given app
         return App.query.get(id)
-        
+
     else:
         return App.basic_info(id)
-
 
 
 @bp.route("/apps", methods=["POST"])
@@ -46,3 +48,16 @@ def create(user, args):
 
     return app
 
+
+@bp.route("/apps/<id>", methods=["DELETE"])
+@authorized
+def delete_app(user, args):
+    app = App.query.get(id)
+    if app is None:
+        raise ApiException("Not found", status_code=401)
+
+    if not user.owns(app.id):
+        raise ApiException("Not authorized", status_code=421)
+
+    db.session.delete(app)
+    db.session.commit()

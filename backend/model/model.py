@@ -21,10 +21,19 @@ class BaseModel(db.Model):
         nullable=False,
     )
 
+    privateFields = None
+
     def to_dict(self):
         """Return a dictionary representation of this model."""
-        return {
+        res = {
             column.key: getattr(self, attr)
             for attr, column in self.__mapper__.c.items()
         }
+
+        if self.privateFields is not None:
+            for field in self.privateFields:
+                if field in res:
+                    del res[field]
+
+        return res
 

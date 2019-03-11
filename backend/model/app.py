@@ -32,6 +32,8 @@ class App(BaseModel):
 
     stripe_account_id = db.Column(db.Text, nullable=True)
 
+    privateFields = ["secret", "stripe_account_id", "account_id"]
+
     @staticmethod
     def generate_secret():
         return "".join(
@@ -61,4 +63,10 @@ class App(BaseModel):
     def basic_info(id):
         # returns a publicly viewable dict containing basic info about app given an id
         app = App.query.get(id)
-        return {"id": app.id, "name": app.name, "url": app.url, "description": app.description}
+        return {
+            "id": app.id,
+            "name": app.name,
+            "url": app.url,
+            "description": app.description,
+        }
+

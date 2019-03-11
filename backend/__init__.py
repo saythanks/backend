@@ -2,6 +2,8 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
 
+import stripe
+
 from backend.config import Config
 from backend.errors import bp as error_bp
 from backend.persistence import db, redis
@@ -31,10 +33,13 @@ def to_dict(val):
 
     return val
 
+
 def is_sequence(arg):
-    return (not hasattr(arg, "strip") and
-        hasattr(arg, "__getitem__") or
-        hasattr(arg, "__iter__"))
+    return (
+        not hasattr(arg, "strip")
+        and hasattr(arg, "__getitem__")
+        or hasattr(arg, "__iter__")
+    )
 
 
 def to_json(val):
@@ -43,7 +48,6 @@ def to_json(val):
 
     if is_sequence(val):
         return jsonify(list(map(lambda v: to_dict(v), val)))
-
 
     if isinstance(val, BaseModel):
         return jsonify(val.to_dict())
@@ -72,6 +76,7 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
 
     app.config.from_object(Config)
+    stripe.api_key = "sk_test_ssrVf0FK8RDjJVrPozoWT1iq"
 
     app.response_class = JSONResponse
 

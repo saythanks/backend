@@ -29,6 +29,7 @@ services:
             - POSTGRES_USER=saythanks
             - POSTGRES_PASSWORD=password
             - POSTGRES_DB=saythanks
+            - PGDATA=pgdata
     redis:
         image: redis:3.0-alpine
         volumes:

@@ -75,6 +75,9 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
 
+    app.static_folder = "static"
+    app.static_url_path = ""
+
     app.config.from_object(Config)
     stripe.api_key = "sk_test_ssrVf0FK8RDjJVrPozoWT1iq"
 

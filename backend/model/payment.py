@@ -16,6 +16,8 @@ class Payment(BaseModel):
     payable_id = db.Column(UUID, db.ForeignKey("payable.id"))
     payable = db.relationship("Payable")
 
+    content_url = db.Column(db.String)
+
     amount = db.Column(db.Integer, nullable=False, default=0)
 
     @staticmethod

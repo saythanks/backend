@@ -1,5 +1,6 @@
 from webargs import fields
 from webargs.flaskparser import use_args
+import stripe
 
 from backend.errors.ApiException import ApiException
 from backend.middleware.token_auth import maybe_authorized, authorized
@@ -79,6 +80,11 @@ def create_tx_account(args):
         raise ApiException("Could not create user account")
 
     if "card_token" in args.keys():
+        customer = strip.Customer.create(
+            source=args["card_token"],
+            email=user.email
+        )
+        user.as_stripe_customer(customer)
         deposit = user.deposit(args["top_up"], args["card_token"])
         if deposit is None:
             raise ApiException("Could not deposit funds")

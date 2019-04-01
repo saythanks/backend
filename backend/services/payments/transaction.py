@@ -24,33 +24,47 @@ If not signed in:
 - top_up
 """
 
+
 @bp.route("/transactions", methods=["get"])
 @authorized
-@use_args({"app": fields.Str(), "page": fields.Integer()})
+@use_args({"app": fields.Str(), "page": fields.Integer(missing=1)})
 def get_txs(user, args):
-    dest_id = App.query.get_or_404(args["app"]).account_id if "app" in args.keys() else user.account_id
+    dest_id = (
+        App.query.get_or_404(args["app"]).account_id
+        if "app" in args.keys()
+        else user.account_id
+    )
 
-    page = args["page"] if "page" in args.keys() else 1
+    page = args["page"]
 
     page_size = 20
 
     return Payment.payments_to(dest_id, page_size, page=page)
-    
-
 
 
 @bp.route("/transactions", methods=["post"])
 @authorized
-@use_args({"app": fields.Str(required=True), "amount": fields.Int(required=True)})
+@use_args(
+    {
+        "app": fields.Str(required=True),
+        "price": fields.Int(required=True),
+        "count": fields.Int(missing=1),
+    }
+)
 def create_tx(user, args):
     app = App.query.get_or_404(args["app"])
 
-    payment, leftover = Payment.transfer(user, app, args["amount"])
+    payment, leftover = Payment.transfer(user, app, args["price"], args["count"])
 
     if payment is None:
         raise ApiException("Could not complete payment")
 
-    return {"success": True, "notProcessed": leftover}
+    return {
+        "success": True,
+        "notProcessed": leftover,
+        "paid": payment.amount,
+        "balance": user.account.balance,
+    }
 
 
 @bp.route("/transactions/new", methods=["post"])

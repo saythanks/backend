@@ -23,19 +23,25 @@ class Payment(BaseModel):
 
     @staticmethod
     def payments_to(dest_id, page_size, page=1):
-        return Payment.query.filter_by(dest_account_id=dest_id).order_by(
-            Payment.time_created.desc()).paginate(page, page_size, error_out=False)
+        return (
+            Payment.query.filter_by(dest_account_id=dest_id)
+            .order_by(Payment.time_created.desc())
+            .paginate(page, page_size, error_out=False)
+        )
 
     @staticmethod
-    def transfer(user, app, amount):
+    def transfer(user, app, price, count):
         balance = user.account.balance
         leftover = 0
-        if balance is None or balance < amount:
-            if balance < 10:
-                raise ApiException("Not enough funds")
 
-            amount = balance
-            leftover = amount - balance
+        amount = count * price
+
+        if balance is None or balance < price:
+            raise ApiException("Not enough funds")
+
+        if balance < amount:
+            # Get amount that can fit
+            amount = (balance // price) * price
 
         payment = Payment(
             source_account=user.account, dest_account=app.account, amount=amount
@@ -50,5 +56,6 @@ class Payment(BaseModel):
         db.session.add(payment)
         db.session.commit()
 
+        leftover = (price * count) - payment.amount
         return payment, leftover
 

@@ -23,14 +23,16 @@ class Payment(BaseModel):
     @staticmethod
     def transfer(user, app, amount):
         balance = user.account.balance
+        leftover = 0
         if balance is None or balance < amount:
-            raise ApiException("Not enough funds")
-            return None
+            if balance < 10:
+                raise ApiException("Not enough funds")
+
+            amount = balance
+            leftover = amount - balance
 
         payment = Payment(
-            source_account=user.account,
-            dest_account=app.account,
-            amount=amount,
+            source_account=user.account, dest_account=app.account, amount=amount
         )
 
         user.account.balance -= amount
@@ -42,5 +44,5 @@ class Payment(BaseModel):
         db.session.add(payment)
         db.session.commit()
 
-        return payment
+        return payment, leftover
 

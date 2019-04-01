@@ -31,12 +31,12 @@ If not signed in:
 def create_tx(user, args):
     app = App.query.get_or_404(args["app"])
 
-    payment = Payment.transfer(user, app, args["amount"])
+    payment, leftover = Payment.transfer(user, app, args["amount"])
 
     if payment is None:
         raise ApiException("Could not complete payment")
 
-    return {"success": True}
+    return {"success": True, "notProcessed": leftover}
 
 
 @bp.route("/transactions/new", methods=["post"])

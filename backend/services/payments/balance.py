@@ -9,12 +9,25 @@ from backend.middleware.token_auth import authorized
 from backend.services.payments import bp
 from backend.middleware.token_auth import authorized
 
+from backend.model.payment import Payment
+
+
+@bp.route("/me", methods=["GET"])
+@authorized
+def user_manifest(user):
+    # We want: balance, transactions
+
+    return {
+        "me": user.id,
+        "balance": user.account.balance,
+        "transactions": Payment.payments_from(user.account.id, 20, 1),
+    }
+
 
 # Handles route that retrieves a user's balance
 @bp.route("/balance", methods=["GET"])
 @authorized
 def index(user):
-    balance = int(redis_client.get("balance", default=0))
     return jsonify(
         {"me": user.id, "balance": user.account.balance, "monthly_spend": 1.50}
     )

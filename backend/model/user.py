@@ -38,10 +38,12 @@ class User(BaseModel):
 
         return user
 
-    def as_stripe_customer(customer):
+    def as_stripe_customer(self, customer):
         # takes in a stripe customer object and sets fields of user accordingly
         if customer is not None:
-            self.stripe_id = customer.customer_id
+            self.stripe_id = customer.id
+
+        db.session.commit()
 
         return self
 

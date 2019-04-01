@@ -22,6 +22,7 @@ class User(BaseModel):
 
     stripe_id = db.Column(db.Text)
     last_4 = db.Column(db.Text)
+    card_brand = db.Column(db.Text)
 
     def owns(self, app_id):
         return id in [app.id for app in self.apps]
@@ -43,7 +44,10 @@ class User(BaseModel):
         # takes in a stripe customer object and sets fields of user accordingly
         if customer is not None:
             self.stripe_id = customer.customer_id
-            self.last_4 = customer.sources.data[0].last4 if len(customer.sources.data) > 0 else None
+            
+            if len(customer.sources.data) > 0:
+                self.last_4 = customer.sources.data[0].last4
+                self.card_brand = customer.sources.data[0].brand
 
         if commit:
             db.session.commit()

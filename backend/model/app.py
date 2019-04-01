@@ -30,6 +30,8 @@ class App(BaseModel):
     url = db.Column(db.Text, nullable=True)
     description = db.Column(db.Text, nullable=True)
 
+    image_url = db.Column(db.Text, nullable=True)
+
     stripe_account_id = db.Column(db.Text, nullable=True)
 
     privateFields = ["secret", "stripe_account_id", "account_id"]
@@ -41,13 +43,14 @@ class App(BaseModel):
         )
 
     @staticmethod
-    def create_for_user(user, name, url=None, description=None):
+    def create_for_user(user, name, image_url=None, url=None, description=None):
         account = Account()
         app = App(
             account=account,
             name=name,
             secret=App.generate_secret(),
             url=url,
+            image_url=image_url,
             description=description,
         )
 
@@ -68,5 +71,6 @@ class App(BaseModel):
             "name": app.name,
             "url": app.url,
             "description": app.description,
+            "image_url": app.image_url
         }
 

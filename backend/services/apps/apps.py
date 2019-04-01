@@ -34,6 +34,7 @@ def get(user, id):
         "name": fields.Str(required=True),
         "description": fields.Str(),
         "url": fields.Str(),
+        "image": fields.Str()
     }
 )
 def create(user, args):
@@ -43,7 +44,7 @@ def create(user, args):
     # return jsonify(user.apps)
 
     app = App.create_for_user(
-        user, args["name"], description=args["description"], url=args["url"]
+        user, args["name"], description=args["description"], url=args["url"], image_url=args['image']
     )
 
     return app

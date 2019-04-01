@@ -34,7 +34,7 @@ def get_txs_to(user, args):
 @authorized
 @use_args({"app": fields.Str(), "page": fields.Integer()})
 def get_txs_from(user, args):
-    return get_payments(user, args, False)
+    return get_payments(user, args, to=False)
 
 def get_payments(user, args, to=True):
     account_id = App.query.get_or_404(args["app"]).account_id if "app" in args.keys() else user.account_id

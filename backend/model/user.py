@@ -38,6 +38,13 @@ class User(BaseModel):
 
         return user
 
+    def as_stripe_customer(customer):
+        # takes in a stripe customer object and sets fields of user accordingly
+        if customer is not None:
+            self.stripe_id = customer.customer_id
+
+        return self
+
     def deposit(self, amount, stripe_token=None):
         if stripe_token is None:
             stripe_token = self.stripe_id

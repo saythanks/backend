@@ -1,4 +1,5 @@
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import desc
 
 from backend.errors.ApiException import ApiException
 from backend.model.model import BaseModel
@@ -19,6 +20,11 @@ class Payment(BaseModel):
     content_url = db.Column(db.String)
 
     amount = db.Column(db.Integer, nullable=False, default=0)
+
+    @staticmethod
+    def payments_to(dest_id, page_size, page=1):
+        return Payment.query.filter_by(dest_account_id=dest_id).order_by(
+            Payment.time_created.desc()).paginate(page, page_size, error_out=False)
 
     @staticmethod
     def transfer(user, app, amount):

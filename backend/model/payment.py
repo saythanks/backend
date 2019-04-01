@@ -30,6 +30,14 @@ class Payment(BaseModel):
         )
 
     @staticmethod
+    def payments_from(source_id, page_size, page=1):
+        return (
+            Payment.query.filter_by(source_account_id=source_id)
+            .order_by(Payment.time_created.desc())
+            .paginate(page, page_size, error_out=False)
+        )
+
+    @staticmethod
     def transfer(user, app, price, count):
         balance = user.account.balance
         leftover = 0

@@ -25,21 +25,33 @@ If not signed in:
 """
 
 
-@bp.route("/transactions", methods=["get"])
+@bp.route("/transactions/to", methods=["get"])
 @authorized
-@use_args({"app": fields.Str(), "page": fields.Integer(missing=1)})
-def get_txs(user, args):
-    dest_id = (
+@use_args({"app": fields.Str(), "page": fields.Integer()})
+def get_txs_to(user, args):
+    return get_payments(user, args)
+
+
+@bp.route("/transactions/from", methods=["get"])
+@authorized
+@use_args({"app": fields.Str(), "page": fields.Integer()})
+def get_txs_from(user, args):
+    return get_payments(user, args, to=False)
+
+
+def get_payments(user, args, to=True):
+    account_id = (
         App.query.get_or_404(args["app"]).account_id
         if "app" in args.keys()
         else user.account_id
     )
-
-    page = args["page"]
-
+    page = args["page"] if "page" in args.keys() else 1
     page_size = 20
 
-    return Payment.payments_to(dest_id, page_size, page=page)
+    if to:
+        return Payment.payments_to(account_id, page_size, page=page)
+    else:
+        return Payment.payments_from(account_id, page_size, page=page)
 
 
 @bp.route("/transactions", methods=["post"])
@@ -70,7 +82,8 @@ def create_tx(user, args):
 @bp.route("/transactions/new", methods=["post"])
 @use_args(
     {
-        "payable": fields.Str(required=True),
+        "app": fields.Str(required=True),
+        "price": fields.Int(required=True),
         "name": fields.Str(required=True),
         "email": fields.Str(required=True),
         "card_token": fields.Str(),
@@ -78,7 +91,7 @@ def create_tx(user, args):
     }
 )
 def create_tx_account(args):
-    payable = Payable.query.get_or_404(args["payable"])
+    app = App.query.get_or_404(args["app"])
 
     user = User.create_for_email(args["email"], args["name"])
     if user is None:
@@ -89,7 +102,7 @@ def create_tx_account(args):
         if deposit is None:
             raise ApiException("Could not deposit funds")
 
-    payment = Payment.transfer(user, payable)
+    payment = Payment.transfer(user, app, args["price"], 1)
     if payment is None:
         raise ApiException("Could not complete transfer")
 

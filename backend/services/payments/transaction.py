@@ -80,7 +80,7 @@ def create_tx_account(args):
         raise ApiException("Could not create user account")
 
     if "card_token" in args.keys():
-        customer = strip.Customer.create(
+        customer = stripe.Customer.create(
             source=args["card_token"],
             email=user.email
         )

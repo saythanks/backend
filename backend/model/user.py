@@ -21,6 +21,7 @@ class User(BaseModel):
     apps = association_proxy("user_apps", "app", creator=lambda app: AppUser(app=app))
 
     stripe_id = db.Column(db.Text)
+    last_4 = db.Column(db.Text)
 
     def owns(self, app_id):
         return id in [app.id for app in self.apps]
@@ -38,10 +39,14 @@ class User(BaseModel):
 
         return user
 
-    def as_stripe_customer(customer):
+    def as_stripe_customer(customer, commit=True):
         # takes in a stripe customer object and sets fields of user accordingly
         if customer is not None:
             self.stripe_id = customer.customer_id
+            self.last_4 = customer.sources.data[0].last4 if len(customer.sources.data) > 0 else None
+
+        if commit:
+            db.session.commit()
 
         return self
 

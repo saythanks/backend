@@ -4,6 +4,7 @@ from sqlalchemy import desc
 from backend.errors.ApiException import ApiException
 from backend.model.model import BaseModel
 from backend.model.account import Account
+from backend.model.app import App
 from backend.persistence.db import db
 
 
@@ -20,6 +21,11 @@ class Payment(BaseModel):
     content_url = db.Column(db.String)
 
     amount = db.Column(db.Integer, nullable=False, default=0)
+
+    def get_user_info(self):
+        d = BaseModel.to_dict(self)
+        d["app"] = App.for_account(self.dest_account_id).to_dict()
+        return d
 
     @staticmethod
     def payments_to(dest_id, page_size, page=1):

@@ -37,6 +37,10 @@ class App(BaseModel):
     privateFields = ["secret", "stripe_account_id", "account_id"]
 
     @staticmethod
+    def for_account(account_id):
+        return App.query.filter_by(account_id=account_id).first()
+
+    @staticmethod
     def generate_secret():
         return "".join(
             random.choice(string.ascii_letters + string.digits) for _ in range(40)
@@ -71,6 +75,6 @@ class App(BaseModel):
             "name": app.name,
             "url": app.url,
             "description": app.description,
-            "image_url": app.image_url
+            "image_url": app.image_url,
         }
 

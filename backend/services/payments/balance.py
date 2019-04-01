@@ -20,7 +20,7 @@ def user_manifest(user):
     return {
         "me": user.id,
         "balance": user.account.balance,
-        "transactions": Payment.payments_from(user.account.id, 20, 1),
+        "transactions": Payment.payments_from(user.account.id, 20, 1).items,
     }
 
 

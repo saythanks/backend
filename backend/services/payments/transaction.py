@@ -26,33 +26,48 @@ If not signed in:
 """
 
 
-@bp.route("/transactions/to", methods=["get"])
+@bp.route("/transactions/to/", methods=["get"])
 @authorized
-@use_args({"app": fields.Str(), "page": fields.Integer()})
+@use_args({"app": fields.Str(required=True), "page": fields.Integer(missing=1)})
 def get_txs_to(user, args):
-    return get_payments(user, args)
+    pg = get_payments(args["app"], args["page"], to=True)
+
+    return {
+        "items": list(map(lambda i: i.get_user_info(), pg.items)),
+        "total": pg.total,
+        "has_next": pg.has_next,
+        "has_prev": pg.has_prev,
+        "next_num": pg.next_num,
+        "prev_num": pg.prev_num,
+    }
 
 
 @bp.route("/transactions/from", methods=["get"])
 @authorized
-@use_args({"app": fields.Str(), "page": fields.Integer()})
+@use_args({"app": fields.Str(), "page": fields.Integer(missing=1)})
 def get_txs_from(user, args):
-    return get_payments(user, args, to=False)
+    pg = get_payments(user.account_id, args["page"], to=False)
+
+    return {
+        "items": list(map(lambda i: i.get_user_info(), pg.items)),
+        "total": pg.total,
+        "has_next": pg.has_next,
+        "has_prev": pg.has_prev,
+        "next_num": pg.next_num,
+        "prev_num": pg.prev_num,
+    }
 
 
-def get_payments(user, args, to=True):
-    account_id = (
-        App.query.get_or_404(args["app"]).account_id
-        if "app" in args.keys()
-        else user.account_id
-    )
-    page = args["page"] if "page" in args.keys() else 1
-    page_size = 20
+def get_payments(account_id, page, to=True):
+    page_size = 5
 
     if to:
         return Payment.payments_to(account_id, page_size, page=page)
     else:
         return Payment.payments_from(account_id, page_size, page=page)
+
+
+2
 
 
 @bp.route("/transactions", methods=["post"])

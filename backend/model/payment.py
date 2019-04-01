@@ -21,20 +21,16 @@ class Payment(BaseModel):
     amount = db.Column(db.Integer, nullable=False, default=0)
 
     @staticmethod
-    def transfer(user, payable):
+    def transfer(user, app, amount):
         balance = user.account.balance
-        if balance is None or balance < payable.display_price:
+        if balance is None or balance < amount:
             raise ApiException("Not enough funds")
             return None
 
-        amount = payable.display_price
-        app = payable.app
-
         payment = Payment(
             source_account=user.account,
-            dest_account=payable.app.account,
-            payable=payable,
-            amount=payable.display_price,
+            dest_account=app.account,
+            amount=amount,
         )
 
         user.account.balance -= amount

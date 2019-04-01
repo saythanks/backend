@@ -4,6 +4,7 @@ from webargs.flaskparser import use_args
 from backend.errors.ApiException import ApiException
 from backend.middleware.token_auth import maybe_authorized, authorized
 from backend.model.payable import Payable
+from backend.model.app import App
 from backend.model.payment import Payment
 from backend.model.account import Account
 from backend.model.deposit import Deposit
@@ -26,11 +27,11 @@ If not signed in:
 
 @bp.route("/transactions", methods=["post"])
 @authorized
-@use_args({"payable": fields.Str(required=True)})
+@use_args({"app": fields.Str(required=True), "amount": fields.Int(required=True)})
 def create_tx(user, args):
-    payable = Payable.query.get_or_404(args["payable"])
+    app = App.query.get_or_404(args["app"])
 
-    payment = Payment.transfer(user, payable)
+    payment = Payment.transfer(user, app, args["amount"])
 
     if payment is None:
         raise ApiException("Could not complete payment")

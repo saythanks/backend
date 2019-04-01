@@ -24,6 +24,20 @@ If not signed in:
 - top_up
 """
 
+@bp.route("/transactions", methods=["get"])
+@authorized
+@use_args({"app": fields.Str(), "page": fields.Integer()})
+def get_txs(user, args):
+    dest_id = App.query.get_or_404(args["app"]).account_id if "app" in args.keys() else user.account_id
+
+    page = args["page"] if "page" in args.keys() else 1
+
+    page_size = 20
+
+    return Payment.payments_to(dest_id, page_size, page=page)
+    
+
+
 
 @bp.route("/transactions", methods=["post"])
 @authorized

@@ -12,7 +12,7 @@ from backend.model.appUser import AppUser
 class User(BaseModel):
 
     email = db.Column(db.Text, unique=True, nullable=False)
-    name = db.Column(db.Text, nullable=False)
+    name = db.Column(db.Text, nullable=True)
 
     account_id = db.Column(UUID, db.ForeignKey("account.id"))
     account = db.relationship("Account")
@@ -80,9 +80,9 @@ class User(BaseModel):
         that email if it exists, or creates a new user.
         """
         email = decoded_token["email"]
-        name = decoded_token["name"]
+        name = decoded_token["name"] if "name" in decoded_token.keys() else None
 
-        if email is None or name is None:
+        if email is None:
             return None, False
 
         user = User.query.filter_by(email=email).first()

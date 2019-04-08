@@ -26,11 +26,12 @@ If not signed in:
 """
 
 
-@bp.route("/transactions/to/", methods=["get"])
+@bp.route("/transactions/to", methods=["get"])
 @authorized
 @use_args({"app": fields.Str(required=True), "page": fields.Integer(missing=1)})
 def get_txs_to(user, args):
-    pg = get_payments(args["app"], args["page"], to=True)
+    app = App.query.get_or_404(args["app"])
+    pg = get_payments(app.account_id, args["page"], to=True)
 
     return {
         "items": list(map(lambda i: i.get_user_info(), pg.items)),

@@ -5,6 +5,7 @@ from backend.errors.ApiException import ApiException
 from backend.model.model import BaseModel
 from backend.model.account import Account
 from backend.model.app import App
+from backend.model.user import User
 from backend.persistence.db import db
 
 
@@ -25,6 +26,7 @@ class Payment(BaseModel):
     def get_user_info(self):
         d = BaseModel.to_dict(self)
         d["app"] = App.for_account(self.dest_account_id).to_dict()
+        d["user"] = User.for_account(self.source_account_id).to_dict()
         return d
 
     @staticmethod

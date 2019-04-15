@@ -90,3 +90,7 @@ class User(BaseModel):
             return user, False
 
         return User.create(email, name)
+
+    @staticmethod
+    def for_account(account_id):
+        return User.query.filter_by(account_id=account_id).first()

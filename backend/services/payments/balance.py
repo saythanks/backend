@@ -8,6 +8,7 @@ from backend.persistence.redis import redis_client
 from backend.middleware.token_auth import authorized
 from backend.services.payments import bp
 from backend.middleware.token_auth import authorized
+from backend.errors.ApiException import ApiException
 
 from backend.model.payment import Payment
 
@@ -17,11 +18,7 @@ from backend.model.payment import Payment
 def user_manifest(user):
     # We want: balance, transactions
 
-    return {
-        "me": user.id,
-        "balance": user.account.balance,
-        "transactions": Payment.payments_from(user.account.id, 20, 1).items,
-    }
+    return {"me": user.to_dict(), "balance": user.account.balance}
 
 
 # Handles route that retrieves a user's balance
@@ -36,7 +33,7 @@ def index(user):
 # Handles route that retrieves a user's balance
 @bp.route("/balance", methods=["POST"])
 @authorized
-@use_args({"token": fields.Str(required=True), "amount": fields.Integer(required=True)})
+@use_args({"token": fields.Str(), "amount": fields.Integer(required=True)})
 def create(user, args):
     token = args["token"]
     amount = args["amount"]
@@ -45,6 +42,16 @@ def create(user, args):
     # balance += amount
 
     # redis_client.set("balance", balance)
+
+    # if token is not None and user.stripe_id is None:
+    #     customer = stripe.Customer.create(source=token, email=user.email)
+    #     user.as_stripe_customer(customer)
+
+    # if token is None and user.stripe_id is not None:
+    #     token = user.stripe_id
+
+    # if token is None
+    #     raise ApiException('No token or payment source', status_code=400)
 
     charge = stripe.Charge.create(
         amount=amount, currency="usd", description="Add to Account", source=token

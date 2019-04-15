@@ -11,8 +11,8 @@ from ...errors.ApiException import ApiException
 
 @bp.route("/apps", methods=["GET"])
 @authorized
-def list(user):
-    return user.apps.copy()
+def listApps(user):
+    return list(map(lambda app: app.app_info(), user.apps))
 
 
 @bp.route("/apps/<id>", methods=["GET"])
@@ -20,11 +20,11 @@ def list(user):
 def get(user, id):
     app = App.query.get_or_404(id)
 
-    if user is not None and user.owns(id):
-        return App.query.get(id)
+    # if user is not None and user.owns(id):
+    return App.query.get(id).app_info()
 
-    else:
-        return App.basic_info(id)
+    # else:
+    #     return App.basic_info(id)
 
 
 @bp.route("/apps", methods=["POST"])
@@ -34,7 +34,7 @@ def get(user, id):
         "name": fields.Str(required=True),
         "description": fields.Str(),
         "url": fields.Str(),
-        "image": fields.Str()
+        "image": fields.Str(),
     }
 )
 def create(user, args):
@@ -44,7 +44,11 @@ def create(user, args):
     # return jsonify(user.apps)
 
     app = App.create_for_user(
-        user, args["name"], description=args["description"], url=args["url"], image_url=args['image']
+        user,
+        args["name"],
+        description=args["description"],
+        url=args["url"],
+        image_url=args["image"],
     )
 
     return app

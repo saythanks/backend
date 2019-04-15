@@ -66,6 +66,11 @@ class App(BaseModel):
 
         return app
 
+    def app_info(self):
+        d = self.to_dict()
+        d["balance"] = self.account.balance
+        return d
+
     @staticmethod
     def basic_info(id):
         # returns a publicly viewable dict containing basic info about app given an id

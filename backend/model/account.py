@@ -9,7 +9,7 @@ from backend.persistence.db import db
 
 
 class Account(BaseModel):
-    balance = db.Column(db.Integer)
+    balance = db.Column(db.Integer, default=0, nullable=False)
 
     def deposit(self, amount, stripe_token):
         charge = stripe.Charge.create(

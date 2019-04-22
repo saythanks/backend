@@ -117,7 +117,7 @@ def create_tx_account(args):
     if "card_token" in args.keys():
         customer = stripe.Customer.create(source=args["card_token"], email=user.email)
         user.as_stripe_customer(customer)
-        deposit = user.deposit(args["top_up"], args["card_token"])
+        deposit = user.deposit(args["top_up"])
         if deposit is None:
             raise ApiException("Could not deposit funds")
 

@@ -4,6 +4,7 @@ from flask import jsonify, request
 from webargs import fields
 from webargs.flaskparser import use_args
 
+from ...persistence.db import db
 from backend.persistence.redis import redis_client
 from backend.middleware.token_auth import authorized
 from backend.services.payments import bp
@@ -17,6 +18,29 @@ from backend.model.payment import Payment
 @authorized
 def user_manifest(user):
     # We want: balance, transactions
+
+    return {"me": user.to_dict(), "balance": user.account.balance}
+
+
+@bp.route("/me/billing", methods=["POST"])
+@authorized
+@use_args({"cardToken": fields.Str(required=True), "name": fields.Str(required=True)})
+def update_billing(user, args):
+
+    if user.stripe_id is not None:
+        customer = stripe.Customer.modify(
+            user.stripe_id, source=args["cardToken"], name=args["name"]
+        )
+    else:
+        customer = stripe.Customer.create(
+            source=args["cardToken"], email=user.email, name=args["name"]
+        )
+
+    user.as_stripe_customer(customer)
+
+    user.name = args["name"]
+
+    db.session.commit()
 
     return {"me": user.to_dict(), "balance": user.account.balance}
 
@@ -35,7 +59,7 @@ def index(user):
 @authorized
 @use_args({"token": fields.Str(), "amount": fields.Integer(required=True)})
 def create(user, args):
-    token = args["token"]
+    token = args["token"] if "token" in args.keys() else None
     amount = args["amount"]
 
     # balance = int(redis_client.get("balance", default=0))
@@ -43,20 +67,23 @@ def create(user, args):
 
     # redis_client.set("balance", balance)
 
-    # if token is not None and user.stripe_id is None:
-    #     customer = stripe.Customer.create(source=token, email=user.email)
-    #     user.as_stripe_customer(customer)
+    if token is not None and user.stripe_id is None:
+        customer = stripe.Customer.create(
+            source=token, email=user.email, name=user.name
+        )
+        if customer is None:
+            raise ApiException("Could not create customer")
+        user.as_stripe_customer(customer)
 
-    # if token is None and user.stripe_id is not None:
-    #     token = user.stripe_id
+    cust_id = user.stripe_id
 
-    # if token is None
-    #     raise ApiException('No token or payment source', status_code=400)
+    if cust_id is None:
+        raise ApiException("No token or payment source", status_code=400)
 
     charge = stripe.Charge.create(
-        amount=amount, currency="usd", description="Add to Account", source=token
+        amount=amount, currency="usd", description="Add to Account", customer=cust_id
     )
 
-    user.deposit(amount, token)
+    user.deposit(amount)
 
     return jsonify({"balance": user.account.balance, "charge": charge})

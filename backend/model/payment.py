@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import desc
 
@@ -59,9 +61,25 @@ class Payment(BaseModel):
             # Get amount that can fit
             amount = (balance // price) * price
 
-        payment = Payment(
-            source_account=user.account, dest_account=app.account, amount=amount
+        # Check if there is a matching payment in the last 15 minutes
+        since = datetime.now() - timedelta(minutes=15)
+        existing = (
+            Payment.query.filter(Payment.time_created > since)
+            .filter_by(source_account_id=user.account.id)
+            .filter_by(dest_account_id=app.account.id)
+            .order_by(Payment.time_created.desc())
+            .first()
         )
+        if existing is None:
+            payment = Payment(
+                source_account=user.account, dest_account=app.account, amount=amount
+            )
+            db.session.add(payment)
+
+        else:
+            existing.amount += amount
+            existing.time_created = datetime.now()
+            payment = existing
 
         user.account.balance -= amount
 
@@ -69,9 +87,8 @@ class Payment(BaseModel):
             app.account.balance = 0
         app.account.balance += amount
 
-        db.session.add(payment)
         db.session.commit()
 
-        leftover = (price * count) - payment.amount
+        leftover = (price * count) - amount
         return payment, leftover
 

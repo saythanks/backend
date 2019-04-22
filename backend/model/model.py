@@ -14,7 +14,7 @@ class BaseModel(db.Model):
     id = db.Column(UUID, primary_key=True, server_default=text("uuid_generate_v4()"))
 
     time_created = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
-    time_udpated = db.Column(
+    time_updated = db.Column(
         db.DateTime,
         server_default=db.func.now(),
         server_onupdate=db.func.now(),

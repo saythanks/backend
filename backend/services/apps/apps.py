@@ -54,15 +54,39 @@ def create(user, args):
     return app
 
 
+@bp.route("/apps", methods=["PUT", "PATCH"])
+@authorized
+@use_args(
+    {
+        "id": fields.Str(required=True),
+        "name": fields.Str(required=True),
+        "description": fields.Str(),
+        "url": fields.Str(),
+        "image": fields.Str(),
+    }
+)
+def update(user, args):
+    """
+    Creates a new app for a given user
+    """
+    app = App.query.get_or_404(args["id"])
+    app.name = args["name"]
+    app.description = args["description"]
+    app.url = args["url"]
+    app.image_url = args["image"]
+
+    db.session.commit()
+
+    return app
+
+
 @bp.route("/apps/<id>", methods=["DELETE"])
 @authorized
-def delete_app(user, args):
-    app = App.query.get(id)
-    if app is None:
-        raise ApiException("Not found", status_code=401)
+def delete_app(user, id):
+    app = App.query.get_or_404(id)
 
-    if not user.owns(app.id):
-        raise ApiException("Not authorized", status_code=421)
+    # if not user.owns(app.id):
+    # raise ApiException("Not authorized", status_code=401)
 
     db.session.delete(app)
     db.session.commit()

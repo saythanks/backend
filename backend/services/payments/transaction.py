@@ -1,4 +1,4 @@
-from webargs import fields
+from webargs import fields, validate
 from webargs.flaskparser import use_args
 import stripe
 
@@ -76,8 +76,8 @@ def get_payments(account_id, page, to=True):
 @use_args(
     {
         "app": fields.Str(required=True),
-        "price": fields.Int(required=True),
-        "count": fields.Int(missing=1),
+        "price": fields.Int(required=True, validate=validate.Range(min=0, max=100)),
+        "count": fields.Int(missing=1, validate=validate.Range(min=0, max=10)),
     }
 )
 def create_tx(user, args):
@@ -100,7 +100,7 @@ def create_tx(user, args):
 @use_args(
     {
         "app": fields.Str(required=True),
-        "price": fields.Int(required=True),
+        "price": fields.Int(required=True, validate=validate.Range(min=0, max=100)),
         "name": fields.Str(required=True),
         "email": fields.Str(required=True),
         "card_token": fields.Str(),

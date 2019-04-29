@@ -11,12 +11,12 @@ from backend.persistence.db import db
 class Account(BaseModel):
     balance = db.Column(db.Integer, default=0, nullable=False)
 
-    def deposit(self, amount, stripe_token):
+    def deposit(self, amount, customer_id):
         charge = stripe.Charge.create(
             amount=amount,
             currency="usd",
             description="Deposit to account",
-            source=stripe_token,
+            customer=customer_id,
         )
 
         deposit = Deposit(account=self, amount=amount)

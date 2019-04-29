@@ -24,6 +24,8 @@ class User(BaseModel):
     last_4 = db.Column(db.Text)
     card_brand = db.Column(db.Text)
 
+    top_up = db.Column(db.Integer, default=0, nullable=True)
+
     def owns(self, app_id):
         return id in [app.id for app in self.apps]
 
@@ -40,10 +42,10 @@ class User(BaseModel):
 
         return user
 
-    def as_stripe_customer(customer, commit=True):
+    def as_stripe_customer(self, customer, commit=True):
         # takes in a stripe customer object and sets fields of user accordingly
         if customer is not None:
-            self.stripe_id = customer.customer_id
+            self.stripe_id = customer.stripe_id
 
             if len(customer.sources.data) > 0:
                 self.last_4 = customer.sources.data[0].last4
@@ -54,13 +56,11 @@ class User(BaseModel):
 
         return self
 
-    def deposit(self, amount, stripe_token=None):
-        if stripe_token is None:
-            stripe_token = self.stripe_id
-        if stripe_token is None:
+    def deposit(self, amount):
+        if self.stripe_id is None:
             return None
 
-        return self.account.deposit(amount, stripe_token)
+        return self.account.deposit(amount, self.stripe_id)
 
     @staticmethod
     def create_for_email(email, name):

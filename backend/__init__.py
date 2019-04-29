@@ -79,7 +79,7 @@ def create_app(test_config=None):
     app.static_url_path = ""
 
     app.config.from_object(Config)
-    stripe.api_key = "sk_test_ssrVf0FK8RDjJVrPozoWT1iq"
+    stripe.api_key = Config.STRIPE_SECRET
 
     app.response_class = JSONResponse
 

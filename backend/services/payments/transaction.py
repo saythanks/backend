@@ -1,4 +1,4 @@
-from webargs import fields
+from webargs import fields, validate
 from webargs.flaskparser import use_args
 import stripe
 
@@ -87,8 +87,8 @@ def get_payments_summary(account_id, to=True):
 @use_args(
     {
         "app": fields.Str(required=True),
-        "price": fields.Int(required=True),
-        "count": fields.Int(missing=1),
+        "price": fields.Int(required=True, validate=validate.Range(min=0, max=100)),
+        "count": fields.Int(missing=1, validate=validate.Range(min=0, max=10)),
     }
 )
 def create_tx(user, args):
@@ -111,7 +111,7 @@ def create_tx(user, args):
 @use_args(
     {
         "app": fields.Str(required=True),
-        "price": fields.Int(required=True),
+        "price": fields.Int(required=True, validate=validate.Range(min=0, max=100)),
         "name": fields.Str(required=True),
         "email": fields.Str(required=True),
         "card_token": fields.Str(),
@@ -128,7 +128,7 @@ def create_tx_account(args):
     if "card_token" in args.keys():
         customer = stripe.Customer.create(source=args["card_token"], email=user.email)
         user.as_stripe_customer(customer)
-        deposit = user.deposit(args["top_up"], args["card_token"])
+        deposit = user.deposit(args["top_up"])
         if deposit is None:
             raise ApiException("Could not deposit funds")
 

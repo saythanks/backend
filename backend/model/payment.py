@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import desc
+from sqlalchemy import desc, func
 
 from backend.errors.ApiException import ApiException
 from backend.model.model import BaseModel
@@ -45,6 +45,17 @@ class Payment(BaseModel):
             Payment.query.filter_by(source_account_id=source_id)
             .order_by(Payment.time_created.desc())
             .paginate(page, page_size, error_out=False)
+        )
+
+    @staticmethod
+    def payments_summary_to(dest_id):
+        return (
+            # Payment.query(Payment.time_created, func.sum(Payment.amount).label('total'))
+
+            Payment.query.filter_by(dest_account_id=dest_id)
+            # .group_by(func.day(Payment.time_created))
+            .order_by(Payment.time_created.desc())
+            .all()
         )
 
     @staticmethod

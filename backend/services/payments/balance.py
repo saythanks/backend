@@ -52,11 +52,14 @@ def create(user, args):
 
     # if token is None
     #     raise ApiException('No token or payment source', status_code=400)
-
-    charge = stripe.Charge.create(
-        amount=amount, currency="usd", description="Add to Account", source=token
-    )
-
-    user.deposit(amount, token)
-
-    return jsonify({"balance": user.account.balance, "charge": charge})
+    try:
+        charge = stripe.Charge.create(
+            amount=amount, currency="usd", description="Add to Account", source=token
+        )
+        user.deposit(amount, token)
+        return jsonify({"balance": user.account.balance, "charge": charge})
+    except stripe.error.CardError, e:
+        msg = e.json_body['error']['message']
+        raise ApiException(msg, status_code=e.https_status)
+    except Exception, e:
+        raise ApiException("Problem Charging Card with Stripe")

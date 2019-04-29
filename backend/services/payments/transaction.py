@@ -42,6 +42,16 @@ def get_txs_to(user, args):
         "prev_num": pg.prev_num,
     }
 
+@bp.route("/transactions/to/summary", methods=["get"])
+@authorized
+@use_args({"app": fields.Str(required=True)})
+def get_tx_summary_to(user, args):
+    app = App.query.get_or_404(args["app"])
+
+    return {
+        "items": [15, 12, 5, 9, 24]
+    }
+
 
 @bp.route("/transactions/from", methods=["get"])
 @authorized
@@ -67,8 +77,9 @@ def get_payments(account_id, page, to=True):
     else:
         return Payment.payments_from(account_id, page_size, page=page)
 
-
-2
+def get_payments_summary(account_id, to=True):
+    if to:
+        return Payment.payments_summary_to(account_id)
 
 
 @bp.route("/transactions", methods=["post"])
